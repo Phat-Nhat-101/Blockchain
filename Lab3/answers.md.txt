@@ -1,0 +1,74 @@
+# Lab 03 - Hash, Merkle Tree and Digital Signatures
+
+**Student:** [Họ tên]  
+**Student ID:** [MSSV]  
+**Class:** [Lớp]  
+**Date:** [Ngày thực hiện]
+
+## Lab 3.1 - Hash and Proof-of-Work
+
+### Observation
+
+Hai chuỗi `Blockchain 2026` và `blockchain 2026` chỉ khác một ký tự nhưng tạo ra hai giá trị SHA-256 hoàn toàn khác nhau. Đây là hiệu ứng tuyết lở của hàm băm.
+
+![Lab 3.1 output](screenshots/lab3_1_pow.png)
+
+### Q1
+
+Mỗi ký tự hex có 16 giá trị có thể xảy ra. Xác suất để một ký tự hash bằng `0` là `1/16`. Vì vậy, mỗi số 0 thêm vào ở đầu hash làm khối lượng tính toán kỳ vọng tăng khoảng 16 lần.
+
+### Q2
+
+Kiểm tra một nonce đã tìm được chỉ cần một lần gọi hàm hash. Người kiểm tra tính `sha256(data + nonce)` rồi kiểm tra tiền tố. Điều này cho thấy Proof-of-Work khó tạo nhưng dễ xác minh.
+
+## Lab 3.2 - Merkle Tree
+
+Chương trình đã hoàn thành ba hàm:
+
+- `merkle_root()`
+- `merkle_proof()`
+- `verify_proof()`
+
+Kết quả:
+
+```text
+[Dán kết quả root và bốn dòng CHECK tại đây]
+```
+
+![Merkle checks](screenshots/lab3_2_checks.png)
+
+### Q3
+
+Độ dài Merkle proof xấp xỉ `ceil(log2(n))`.
+
+Với `n = 1,000,000`:
+
+```text
+ceil(log2(1,000,000)) = ceil(19.93) = 20
+```
+
+Do đó một proof chứa khoảng 20 giá trị hash.
+
+### Q4
+
+Bitcoin SPV sử dụng Merkle proof để xác minh một giao dịch thuộc một block mà không cần tải toàn bộ block. Full node cung cấp transaction hash và các sibling hash trên đường lên Merkle root. Ví SPV tính lại Merkle root rồi so sánh với root trong block header. Nếu hai giá trị bằng nhau, giao dịch được chứng minh là nằm trong block.
+
+## Lab 3.3 - Digital Signatures
+
+Kết quả chạy:
+
+```text
+[Dán address, r,s,v, recovered, match và tampered output tại đây]
+```
+
+![Digital signature output](screenshots/lab3_3_signature.png)
+
+Khi ký hai lần bằng cùng khóa riêng và cùng thông điệp, chữ ký giống nhau. Đây là deterministic ECDSA được mô tả trong RFC 6979.
+
+Đoạn mã ban đầu dùng `Account.create()`, vì vậy nếu chạy lại cả chương trình thì một khóa mới sẽ được tạo và chữ ký sẽ khác. Để kiểm tra tính xác định, chương trình ký hai lần trong cùng một lần chạy bằng cùng `acct.key`.
+
+Khi thông điệp bị sửa từ `Buoi 3` thành `Buoi 4`, chữ ký cũ khôi phục ra một địa chỉ khác với địa chỉ ban đầu. Điều này chứng minh tính toàn vẹn vì thay đổi trong thông điệp làm thay đổi message hash và khiến chữ ký không còn hợp lệ đối với người ký ban đầu.
+
+## GitHub
+
+Repository: [Dán liên kết GitHub]
